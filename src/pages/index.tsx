@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Title } from '../styles/pages/Home'
 
-const Home: React.FC = () => {
+// "react/react-in-jsx-scope": "off"
+
+const Home = () => {
   const [counter, setCounter] = useState(0)
   return (
     <div>
-      <Title>Hello World</Title>
       <p>{counter}</p>
       <button onClick={() => setCounter(counter + 1)}>Increment</button>
     </div>
