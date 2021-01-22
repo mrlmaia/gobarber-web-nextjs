@@ -18,6 +18,21 @@ const theme = extendTheme({
     '4xl': '40px',
     lg: '20px'
   },
+  colors: {
+    ...chakraTheme.colors,
+    orange: {
+      50: '#ffe9cc',
+      100: '#ffc880',
+      200: '#ffa633',
+      300: '#ff9b1a',
+      400: '#ff9000',
+      500: '#ff9000',
+      600: '#cc7300',
+      700: '#995600',
+      800: '#804800',
+      900: '#663a00'
+    }
+  },
   styles: {
     global: {
       '*': {
@@ -39,11 +54,6 @@ const theme = extendTheme({
       },
       'h1, h2, h3, h4, h5, h6, strong': {
         fontWeight: 500
-      },
-      'p, label': {
-        // fontSize: 'sm',
-        color: 'gray.700'
-        // lineHeight: 'tall'
       }
     }
   }
