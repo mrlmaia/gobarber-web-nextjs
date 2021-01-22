@@ -1,2 +1,4 @@
 import Input from './Input'
-export { Input }
+import Button from './Button'
+
+export { Input, Button }

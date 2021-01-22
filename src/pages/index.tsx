@@ -1,20 +1,11 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Text,
-  Link as CLink,
-  Icon,
-  Flex
-} from '@chakra-ui/react'
+import { Box, Heading, Link as CLink, Icon, Flex } from '@chakra-ui/react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { Form } from '@unform/web'
 import { useCallback, useRef } from 'react'
-import { Input } from '../components'
-import { FiLogIn } from 'react-icons/fi'
+import { Button, Input } from '../components'
+import { FiLogIn, FiLock, FiMail } from 'react-icons/fi'
 import { shade } from 'polished'
+
 const SignIn = () => {
   const formRef = useRef()
   const handleSubmit = useCallback(() => {
@@ -36,23 +27,16 @@ const SignIn = () => {
             <Heading as="h1" mb={6}>
               Faça seu login
             </Heading>
-            <Input name="email" placeholder="E-mail" />
-            <Input type="password" name="password" placeholder="Senha" mt={2} />
+            <Input name="email" placeholder="E-mail" icon={FiMail} />
+            <Input
+              type="password"
+              name="password"
+              placeholder="Senha"
+              formControlProps={{ mt: 2 }}
+              icon={FiLock}
+            />
+            <Button>Entrar</Button>
 
-            <Button
-              colorScheme="orange"
-              size="lg"
-              h="56px"
-              w="100%"
-              border="0"
-              p={'0 16px'}
-              color="#312e38"
-              fontWeight="500"
-              mt={4}
-              transition="background-color: 0.2s"
-            >
-              Entrar
-            </Button>
             <CLink
               href="/forgot"
               color="#f4edeb"
