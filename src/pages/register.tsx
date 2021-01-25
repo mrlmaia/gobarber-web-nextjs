@@ -1,15 +1,67 @@
-import { Box, Heading, Link as CLink, Icon, Flex } from '@chakra-ui/react'
+import {
+  Box,
+  Heading,
+  Link as CLink,
+  Icon,
+  Flex,
+  useToast
+} from '@chakra-ui/react'
 import Image from 'next/image'
 import { Form } from '@unform/web'
 import { useCallback, useRef } from 'react'
 import { Button, Input } from '../components'
 import { FiLock, FiMail, FiArrowLeft, FiUser } from 'react-icons/fi'
 import { shade } from 'polished'
+import { FormHandles } from '@unform/core'
+import * as Yup from 'yup'
+import getValidationErrors from '../utils/getValidationErrors'
+type FormData = {
+  name: string
+  email: string
+  password: string
+  repeatPassword: string
+}
 
 const Register = () => {
-  const formRef = useRef()
-  const handleSubmit = useCallback(() => {
-    //
+  const formRef = useRef<FormHandles>(null)
+
+  const toast = useToast()
+
+  const handleSubmit = useCallback(async (data: FormData) => {
+    try {
+      formRef.current.setErrors({})
+
+      const schema = Yup.object().shape({
+        name: Yup.string()
+          .required('Informe um nome')
+          .matches(/^[ a-zA-ZÀ-ÿ\u00f1\u00d1]*$/g, 'Insira apenas letras'),
+        email: Yup.string()
+          .required('Informe um email')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().min(
+          6,
+          'A senha deve conter no mínimo 6 caracteres'
+        ),
+        repeatPassword: Yup.string()
+          .oneOf([Yup.ref('password'), null], 'As senhas não coincidem')
+          .required('As senhas não coincidem')
+      })
+
+      await schema.validate(data, { abortEarly: false })
+
+      alert('/dashboard')
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error)
+        formRef.current?.setErrors(errors)
+      } else {
+        toast({
+          title: 'Ocorreu um erro ao realizar cadastro',
+          status: 'error',
+          description: error.message
+        })
+      }
+    }
   }, [])
 
   return (
@@ -41,7 +93,14 @@ const Register = () => {
               formControlProps={{ mt: 2 }}
               icon={FiLock}
             />
-            <Button>Cadastrar</Button>
+            <Input
+              type="password"
+              name="repeatPassword"
+              placeholder="Repita a senha"
+              formControlProps={{ mt: 2 }}
+              icon={FiLock}
+            />
+            <Button type="submit">Cadastrar</Button>
           </Box>
         </Form>
         <CLink

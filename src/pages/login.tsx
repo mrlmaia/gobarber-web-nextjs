@@ -1,15 +1,56 @@
-import { Box, Heading, Link as CLink, Icon, Flex } from '@chakra-ui/react'
+import {
+  Box,
+  Heading,
+  Link as CLink,
+  Icon,
+  Flex,
+  useToast
+} from '@chakra-ui/react'
 import Image from 'next/image'
 import { Form } from '@unform/web'
 import { useCallback, useRef } from 'react'
 import { Button, Input } from '../components'
 import { FiLogIn, FiLock, FiMail } from 'react-icons/fi'
 import { shade } from 'polished'
+import * as Yup from 'yup'
+import { FormHandles } from '@unform/core'
+import getValidationErrors from '../utils/getValidationErrors'
+
+type FormData = {
+  email: string
+  password: string
+}
 
 const SignIn = () => {
-  const formRef = useRef()
-  const handleSubmit = useCallback(() => {
-    //
+  const formRef = useRef<FormHandles>(null)
+
+  const toast = useToast()
+
+  const handleSubmit = useCallback(async (data: FormData) => {
+    try {
+      formRef.current.setErrors({})
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required('Informe um email')
+          .email('Informe um email válido'),
+        password: Yup.string().required('Informe uma senha')
+      })
+
+      await schema.validate(data, { abortEarly: false })
+
+      alert('/dashboard')
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err)
+        formRef.current?.setErrors(errors)
+      } else {
+        toast({
+          title: 'Ocorreu um erro ao fazer login',
+          status: 'error',
+          description: err.message
+        })
+      }
+    }
   }, [])
 
   return (
@@ -35,7 +76,7 @@ const SignIn = () => {
               formControlProps={{ mt: 2 }}
               icon={FiLock}
             />
-            <Button>Entrar</Button>
+            <Button type="submit">Entrar</Button>
 
             <CLink
               href="/forgot"
